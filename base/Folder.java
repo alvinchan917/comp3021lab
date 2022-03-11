@@ -84,7 +84,18 @@ public class Folder implements Comparable<Folder> {
 			for (String thisKeyword: listOfKeywords) {
 				if (thisKeyword.contains(" ")) {
 					String[] arrayOfThisKeyword = thisKeyword.split(" ");
-					if (! thisNote.getTitle().toLowerCase().contains(arrayOfThisKeyword[0]) &&
+
+					if (thisNote instanceof TextNote) {
+						TextNote thisTextNote = (TextNote)thisNote;
+						if (! thisTextNote.getTitle().toLowerCase().contains(arrayOfThisKeyword[0]) &&
+								! thisTextNote.getTitle().toLowerCase().contains(arrayOfThisKeyword[1]) && 
+								! thisTextNote.getContent().toLowerCase().contains(arrayOfThisKeyword[0]) &&
+								! thisTextNote.getContent().toLowerCase().contains(arrayOfThisKeyword[1])) {
+							match = false;
+							break;
+						}
+					}
+					else if (! thisNote.getTitle().toLowerCase().contains(arrayOfThisKeyword[0]) &&
 							! thisNote.getTitle().toLowerCase().contains(arrayOfThisKeyword[1])) {
 						
 						match = false;
@@ -92,9 +103,18 @@ public class Folder implements Comparable<Folder> {
 					}
 				}
 				else {
-					if (! thisNote.getTitle().toLowerCase().contains(thisKeyword))
+					if (thisNote instanceof TextNote) {
+						TextNote thisTextNote = (TextNote)thisNote;
+						if (! thisNote.getTitle().toLowerCase().contains(thisKeyword) &&
+								! thisTextNote.getContent().toLowerCase().contains(thisKeyword)) {
+							match = false;
+							break;
+						}
+					}
+					else if (! thisNote.getTitle().toLowerCase().contains(thisKeyword)) {
 						match = false;
 						break;
+					}
 				}
 				
 			}
