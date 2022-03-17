@@ -3,12 +3,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.List;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
-public class NoteBook {
+
+public class NoteBook implements java.io.Serializable{
 	private ArrayList<Folder> folders;
+	
+	private static final long serialVersionUID = 1L;
 	
 	public NoteBook() {
 		folders = new ArrayList<Folder>();
+	}
+	
+	public NoteBook(String file) {
+		try {
+			FileInputStream fis = new FileInputStream(file);
+			ObjectInputStream in = new ObjectInputStream(fis);
+			NoteBook n = (NoteBook)in.readObject();
+			this.folders = n.folders;
+			in.close();
+		} catch (Exception e) {
+			folders = new ArrayList<Folder>();
+		}
 	}
 	
 	public boolean createTextNote(String folderName, String title) {
@@ -71,5 +90,21 @@ public class NoteBook {
 			matchingNotes.addAll(thisFolder.searchNotes(keywords));
 		}
 		return matchingNotes;
+	}
+	
+	public boolean save (String file) {
+		try {
+			FileOutputStream fos = new FileOutputStream(file);
+			ObjectOutputStream out = new ObjectOutputStream(fos);
+//			for (Folder f: folders)
+//				out.writeObject(f);
+			out.writeObject(this);
+			out.close();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
+		}
+		return true;
 	}
 }
